@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 const authRouter = require('./controllers/auth.routes');
+const bookingRouter = require('./controllers/booking.routes');
 const verifyToken = require('./middleware/verify-token');
 
 
@@ -21,6 +22,7 @@ app.use(logger('dev'));
 
 // Routes go here
 app.use('/auth', authRouter);
+app.use('/bookings', bookingRouter);
 
 
 app.listen(3000, () => {
