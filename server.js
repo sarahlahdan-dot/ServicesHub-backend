@@ -5,9 +5,9 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
-const authRouter = require('./controllers/auth.routes');
-const bookingRouter = require('./controllers/booking.routes');
-const verifyToken = require('./middleware/verify-token');
+const authRouter = require('./routes/authRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -23,6 +23,7 @@ app.use(logger('dev'));
 // Routes go here
 app.use('/auth', authRouter);
 app.use('/bookings', bookingRouter);
+app.use('/reviews', reviewRouter);
 
 
 app.listen(3000, () => {
