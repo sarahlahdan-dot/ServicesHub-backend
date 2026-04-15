@@ -4,6 +4,11 @@ const Service = require('../models/Service');
 
 const BOOKING_STATUS = ['pending', 'approved', 'rejected', 'completed'];
 
+const isBookingParticipant = (booking, userId) => {
+  const id = String(userId);
+  return String(booking.customerId) === id || String(booking.providerId) === id;
+};
+
 const createBooking = async (req, res) => {
   try {
     const { serviceId, fromDate, toDate } = req.body;
@@ -85,8 +90,67 @@ const updateBookingStatus = async (req, res) => {
   }
 };
 
+const getBookingChat = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id)
+      .populate('chat.senderId', 'name email role')
+      .select('customerId providerId chat status');
+
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found.' });
+    }
+
+    if (req.user.role !== 'admin' && !isBookingParticipant(booking, req.user.id)) {
+      return res.status(403).json({ message: 'You are not allowed to view this chat.' });
+    }
+
+    return res.json({
+      bookingId: booking._id,
+      status: booking.status,
+      chat: booking.chat,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const addBookingChatMessage = async (req, res) => {
+  try {
+    const { message } = req.body;
+    if (!message || !String(message).trim()) {
+      return res.status(400).json({ message: 'Message is required.' });
+    }
+
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: 'Booking not found.' });
+    }
+
+    if (req.user.role !== 'admin' && !isBookingParticipant(booking, req.user.id)) {
+      return res.status(403).json({ message: 'You are not allowed to send messages in this chat.' });
+    }
+
+    booking.chat.push({
+      senderId: req.user.id,
+      message: String(message).trim(),
+    });
+
+    await booking.save();
+
+    const populated = await Booking.findById(booking._id)
+      .populate('chat.senderId', 'name email role')
+      .select('chat');
+
+    return res.status(201).json({ chat: populated.chat });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createBooking,
   getMyBookings,
   updateBookingStatus,
+  getBookingChat,
+  addBookingChatMessage,
 };

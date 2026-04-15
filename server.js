@@ -11,7 +11,6 @@ const reviewRouter = require('./routes/reviewRoutes');
 const serviceRouter = require('./routes/serviceRoutes');
 const cartRouter = require('./routes/cartRoutes');
 const adminRouter = require('./routes/adminRoutes');
-const messageRouter = require('./routes/messageRoutes');
 
 const PORT = Number(process.env.PORT) || 3000;
 const API_PREFIX = process.env.API_PREFIX || '/api';
@@ -53,7 +52,6 @@ app.use(`${API_PREFIX}/reviews`, reviewRouter);
 app.use(`${API_PREFIX}/services`, serviceRouter);
 app.use(`${API_PREFIX}/cart`, cartRouter);
 app.use(`${API_PREFIX}/admin`, adminRouter);
-app.use(`${API_PREFIX}/messages`, messageRouter);
 
 // Backward-compatible routes for clients that still call non-prefixed paths.
 app.use('/auth', authRouter);
@@ -62,7 +60,6 @@ app.use('/reviews', reviewRouter);
 app.use('/services', serviceRouter);
 app.use('/cart', cartRouter);
 app.use('/admin', adminRouter);
-app.use('/messages', messageRouter);
 
 app.get(`${API_PREFIX}/health`, (req, res) => {
   res.json({ status: 'ok' });

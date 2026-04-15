@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
 
+const chatMessageSchema = new mongoose.Schema(
+  {
+    senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    message: { type: String, required: true, trim: true, maxlength: 1000 },
+  },
+  { timestamps: true }
+);
+
 const bookingSchema = new mongoose.Schema(
   {
     serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
@@ -12,6 +20,7 @@ const bookingSchema = new mongoose.Schema(
     },
     fromDate: { type: Date, required: true },
     toDate: { type: Date, required: true },
+    chat: [chatMessageSchema],
   },
   { timestamps: true }
 );
