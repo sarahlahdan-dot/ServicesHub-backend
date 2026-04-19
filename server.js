@@ -5,6 +5,8 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
+const verifyToken = require('./middleware/verify-token');
+const serviceRoutes = require('./controllers/service.routes')
 const authRouter = require('./routes/authRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const adminRouter = require('./routes/adminRoutes');
@@ -22,6 +24,7 @@ app.use(logger('dev'));
 
 // Routes go here
 app.use('/auth', authRouter);
+app.use('/services',serviceRoutes);
 app.use('/messages', messageRouter);
 app.use('/admin', adminRouter);
 
