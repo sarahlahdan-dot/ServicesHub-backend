@@ -2,25 +2,16 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
+    role: {
       type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      minlength: 3,
+      enum: ['customer', 'provider', 'admin'],
+      default: 'customer',
     },
-    hashedPassword: {
-      type: String,
-      required: true
-    },
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    password: { type: String, required: true },
   },
   { timestamps: true }
 );
-
-userSchema.set('toJSON', {
-    transform: (document, returnedObject) => {
-        delete returnedObject.hashedPassword;
-    }
-});
 
 module.exports = mongoose.model('User', userSchema);
