@@ -1,7 +1,7 @@
-const moongoose = require('mongoose');
+const mongoose = require('mongoose');
    
 
-    const reviewSchema = new moongoose.Schema({
+    const reviewSchema = new mongoose.Schema({
         bookingId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Booking' },
         userId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
         providerId: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
@@ -11,6 +11,6 @@ const moongoose = require('mongoose');
         createdAt: { type: Date, default: Date.now }
     });
 
-    const Review = moongoose.model('Review', reviewSchema);
+    const Review = mongoose.model('Review', reviewSchema);
 
-    module.exports = Review;    
+module.exports = Review;
