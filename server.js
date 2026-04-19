@@ -5,9 +5,11 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
-const authRouter = require('./controllers/auth.routes');
 const verifyToken = require('./middleware/verify-token');
 const serviceRoutes = require('./controllers/service.routes')
+const authRouter = require('./routes/authRoutes');
+const messageRouter = require('./routes/messageRoutes');
+const adminRouter = require('./routes/adminRoutes');
 
 
 mongoose.connect(process.env.MONGODB_URI);
@@ -23,6 +25,13 @@ app.use(logger('dev'));
 // Routes go here
 app.use('/auth', authRouter);
 app.use('/services',serviceRoutes);
+app.use('/messages', messageRouter);
+app.use('/admin', adminRouter);
+
+app.get('/', (_req, res) => {
+  res.json({ status: 'ok' });
+});
+
 
 app.listen(3000, () => {
   console.log('The express app is ready!');
