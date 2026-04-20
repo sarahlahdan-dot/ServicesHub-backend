@@ -6,16 +6,20 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const logger = require('morgan');
 const verifyToken = require('./middleware/verify-token');
-const serviceRoutes = require('./controllers/service.routes')
+const serviceRoutes = require('./routes/serviceRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 const authRouter = require('./routes/authRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const adminRouter = require('./routes/adminRoutes');
-
-
-mongoose.connect(process.env.MONGODB_URI);
+const bookingRouter = require('./routes/bookingRoutes');
+const PORT = process.env.PORT || 3000;
 
 mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('MongoDB connection error:', err.message);
 });
 
 app.use(cors());
@@ -34,7 +38,19 @@ app.get('/', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
+  } catch (err) {
+    console.error('MongoDB unavailable, starting API without DB connection.');
+    console.error(err.message);
+  }
 
-app.listen(3000, () => {
-  console.log('The express app is ready!');
-});
+  app.listen(PORT, () => {
+    console.log(`The express app is ready on port ${PORT}!`);
+  });
+};
+
+startServer();
