@@ -27,12 +27,12 @@ app.use(express.json());
 app.use(logger('dev'));
 
 // Routes go here
-app.use('/auth', authRouter);
-app.use('/services', serviceRoutes);
-app.use('/reviews', reviewRoutes);
-app.use('/messages', messageRouter);
-app.use('/admin', adminRouter);
-app.use('/bookings', bookingRouter);
+app.use("/api/auth", authRouter);
+app.use("/api/services", serviceRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/messages", messageRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/bookings", bookingRouter);
 
 app.get('/', (_req, res) => {
   res.json({ status: 'ok' });
