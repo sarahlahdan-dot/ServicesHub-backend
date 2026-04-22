@@ -2,7 +2,7 @@ const Service = require('../models/Service');
 
 const getAllServices = async (req, res) => {
     try {
-        const allServices = await Service.find().populate('providerId', 'username');
+        const allServices = await Service.find().populate('providerId', 'name email role');
         res.json(allServices);
     } catch (err) {
         console.log(err);
