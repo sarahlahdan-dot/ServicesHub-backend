@@ -7,9 +7,14 @@ function verifyToken(req, res, next) {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = decoded.payload || {};
 
     // Assign decoded payload to req.user
-    req.user = decoded.payload;
+    req.user = {
+      ...payload,
+      id: payload.id || payload._id,
+      _id: payload._id || payload.id,
+    };
 
     // Call next() to invoke the next middleware function
     next();

@@ -21,6 +21,47 @@ const ensureUserCanMessage = (currentUser, targetUserId) => {
   return { currentUserId };
 };
 
+const listInbox = async (req, res) => {
+  try {
+    const currentUserId = String(req.user.id || req.user._id);
+
+    const messages = await Message.find({
+      $or: [{ senderId: currentUserId }, { receiverId: currentUserId }],
+    })
+      .populate('senderId', 'name email role')
+      .populate('receiverId', 'name email role')
+      .sort({ createdAt: -1 });
+
+    const conversations = [];
+    const seenUserIds = new Set();
+
+    messages.forEach((message) => {
+      const counterpart = String(message.senderId?._id) === currentUserId
+        ? message.receiverId
+        : message.senderId;
+
+      if (!counterpart?._id) {
+        return;
+      }
+
+      const counterpartId = String(counterpart._id);
+      if (seenUserIds.has(counterpartId)) {
+        return;
+      }
+
+      seenUserIds.add(counterpartId);
+      conversations.push({
+        user: counterpart,
+        latestMessage: message,
+      });
+    });
+
+    return res.json({ conversations });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 const listUserMessages = async (req, res) => {
   try {
     const targetUserResult = await getTargetUser(req.params.userId);
@@ -83,6 +124,7 @@ const sendUserMessage = async (req, res) => {
 };
 
 module.exports = {
+  listInbox,
   listUserMessages,
   sendUserMessage,
 };
