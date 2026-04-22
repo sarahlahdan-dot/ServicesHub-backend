@@ -32,7 +32,7 @@ const addCartItem = async (req, res) => {
     const existingIndex = cart.items.findIndex((item) => String(item.serviceId) === String(serviceId));
     const itemPayload = {
       serviceId,
-      providerId: service.provider,
+      providerId: service.providerId,
       fromDate,
       toDate,
     };
