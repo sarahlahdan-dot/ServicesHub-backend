@@ -12,6 +12,7 @@ const authRouter = require('./routes/authRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
+const cartRouter = require('./routes/cartRoutes');
 const PORT = process.env.PORT || 3000;
 
 mongoose.connection.on('connected', () => {
@@ -33,6 +34,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/messages", messageRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/bookings", bookingRouter);
+app.use("/api/cart", cartRouter);
 
 app.get('/', (_req, res) => {
   res.json({ status: 'ok' });
