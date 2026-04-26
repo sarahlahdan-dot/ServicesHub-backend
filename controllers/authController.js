@@ -1,18 +1,22 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
 const register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
     if (!name || !email || !password) {
-      return res.status(400).json({ message: 'name, email, and password are required.' });
+      return res
+        .status(400)
+        .json({ message: "name, email, and password are required." });
     }
 
-    const existingUser = await User.findOne({ email: String(email).toLowerCase().trim() });
+    const existingUser = await User.findOne({
+      email: String(email).toLowerCase().trim(),
+    });
     if (existingUser) {
-      return res.status(409).json({ message: 'Email already registered.' });
+      return res.status(409).json({ message: "Email already registered." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -20,7 +24,7 @@ const register = async (req, res) => {
       name: String(name).trim(),
       email: String(email).toLowerCase().trim(),
       password: hashedPassword,
-      role: role || 'customer',
+      role: role || "customer",
     });
 
     const payload = {
@@ -30,7 +34,9 @@ const register = async (req, res) => {
       name: user.name,
     };
 
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     return res.status(201).json({ token, user: payload });
   } catch (error) {
@@ -42,17 +48,21 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      return res.status(400).json({ message: 'email and password are required.' });
+      return res
+        .status(400)
+        .json({ message: "email and password are required." });
     }
 
-    const user = await User.findOne({ email: String(email).toLowerCase().trim() });
+    const user = await User.findOne({
+      email: String(email).toLowerCase().trim(),
+    });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(401).json({ message: 'Invalid credentials.' });
+      return res.status(401).json({ message: "Invalid credentials." });
     }
 
     const payload = {
@@ -62,7 +72,9 @@ const login = async (req, res) => {
       name: user.name,
     };
 
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
 
     return res.json({ token, user: payload });
   } catch (error) {
@@ -70,7 +82,4 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = {
-  register,
-  login,
-};
+module.exports = { register, login };
