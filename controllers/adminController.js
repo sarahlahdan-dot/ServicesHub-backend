@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const Message = require("../models/Message");
 
-const getUsers = async (req, res) => {
+const getUsers = async (res) => {
   try {
     const users = await User.find().select("-password").sort({ createdAt: -1 });
     return res.json(users);
@@ -10,7 +10,7 @@ const getUsers = async (req, res) => {
   }
 };
 
-const getStats = async (req, res) => {
+const getStats = async (res) => {
   try {
     const [users, providers, customers, admins, messages] = await Promise.all([
       User.countDocuments(),

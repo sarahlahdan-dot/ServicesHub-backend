@@ -35,7 +35,6 @@ app.use(
 app.use(express.json());
 app.use(logger("dev"));
 
-// Initialise Socket.io and attach to app so controllers can emit events
 const io = initSocket(server);
 app.set("io", io);
 
@@ -55,7 +54,7 @@ app.get("/", (_req, res) => {
 const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 10000,
     });
   } catch (err) {
     console.error("MongoDB unavailable, starting API without DB connection.");
